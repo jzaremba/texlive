@@ -1,0 +1,22 @@
+file := test_file
+save_dir := ../../../../Presentations
+
+all: full copy
+
+full:
+	docker run -it --rm -e "USER=$(shell id -un)" -e "USER_ID=$(shell id -u)" -e "GROUP_ID=$(shell id -g)" -v "$(shell pwd):/opt/workdir" -v "$(shell cd ../..; pwd -P):/presentations" -v "$(shell cd ../../../../figures; pwd -P):/figures" jzaremba/texlive xelatex $(file)
+	docker run -it --rm -e "USER=$(shell id -un)" -e "USER_ID=$(shell id -u)" -e "GROUP_ID=$(shell id -g)" -v "$(shell pwd):/opt/workdir" -v "$(shell cd ../..; pwd -P):/presentations" -v "$(shell cd ../../../../figures; pwd -P):/figures" jzaremba/texlive bibtex $(file)
+	docker run -it --rm -e "USER=$(shell id -un)" -e "USER_ID=$(shell id -u)" -e "GROUP_ID=$(shell id -g)" -v "$(shell pwd):/opt/workdir" -v "$(shell cd ../..; pwd -P):/presentations" -v "$(shell cd ../../../../figures; pwd -P):/figures" jzaremba/texlive xelatex $(file)
+	docker run -it --rm -e "USER=$(shell id -un)" -e "USER_ID=$(shell id -u)" -e "GROUP_ID=$(shell id -g)" -v "$(shell pwd):/opt/workdir" -v "$(shell cd ../..; pwd -P):/presentations" -v "$(shell cd ../../../../figures; pwd -P):/figures" jzaremba/texlive xelatex $(file)
+
+fast:
+	docker run -it --rm -e "USER=$(shell id -un)" -e "USER_ID=$(shell id -u)" -e "GROUP_ID=$(shell id -g)" -v "$(shell pwd):/opt/workdir" -v "$(shell cd ../..; pwd -P):/presentations" -v "$(shell cd ../../../../figures; pwd -P):/figures" jzaremba/texlive xelatex $(file)
+
+save:
+	mkdir -p ${save_dir}
+	cp ${file}.pdf ${save_dir}
+
+clean:
+	rm $(file).aux $(file).log $(file).out $(file).blg $(file).bbl $(file).toc $(file).nav $(file).vrb $(file).snm 2>/dev/null
+
+.PHONY: all fast full save clean

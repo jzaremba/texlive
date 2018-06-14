@@ -1,0 +1,41 @@
+FROM debian:stretch
+
+LABEL maintainer "Jeff Zaremba <jzaremba@gmail.com>"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -qq && apt-get install -qqy \
+	build-essential \
+    ca-certificates \
+    curl \
+    git \
+    gnuplot \
+    texlive-full \
+    unzip \
+    vim \
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Install Fira Font
+RUN set -ex \
+    && cd $(mktemp -d) \
+    && wget -nv "https://bboxtype.com/downloads/Fira/Download_Folder_FiraSans_4301.zip" \
+    && wget -nv "https://bboxtype.com/downloads/Fira/Fira_Mono_3_2.zip" \
+    && unzip Download_Folder_FiraSans_4301.zip \
+    && unzip Fira_Mono_3_2.zip \
+    && mkdir -p /usr/share/fonts/truetype/FiraSans \
+    && mkdir -p /usr/share/fonts/opentype/FiraSans \
+    && cp Download_Folder_FiraSans_4301/Fonts/Fira_Sans_TTF_4301/*/*/*.ttf \
+        /usr/share/fonts/truetype/FiraSans/ \
+    && cp Download_Folder_FiraSans_4301/Fonts/Fira_Sans_OTF_4301/*/*/*.otf \
+        /usr/share/fonts/opentype/FiraSans/ \
+    && cp Fira_Mono_3_2/Fonts/FiraMono_WEB_32/*.ttf \
+        /usr/share/fonts/truetype/FiraSans \
+    && cp Fira_Mono_3_2/Fonts/FiraMono_OTF_32/*.otf \
+        /usr/share/fonts/truetype/FiraSans \
+    && rm -rf $(pwd) \
+    && cd / \
+    && fc-cache -fv
+
+COPY ./packages /etc/texmf/tex/packages
